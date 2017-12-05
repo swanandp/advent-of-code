@@ -1,12 +1,11 @@
 
 lib = File.expand_path("../lib", __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require "advent/of/code/version"
-require "code"
+require "advent_of_code"
 
 Gem::Specification.new do |spec|
   spec.name          = "advent-of-code"
-  spec.version       = Advent::Of::Code::VERSION
+  spec.version       = AdventOfCode::VERSION
   spec.authors       = ["Swanand Pagnis"]
   spec.email         = ["swanand.pagnis@gmail.com"]
 
