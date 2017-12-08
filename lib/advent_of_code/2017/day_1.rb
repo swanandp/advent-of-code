@@ -1,5 +1,5 @@
-class Day1 < AdventDay
-  attr_accessor :step_size
+class Day1
+  attr_accessor :input, :output_part_1, :output_part_2, :processed_input, :step_size
 
   def initialize(numeric_string)
     self.input = numeric_string
