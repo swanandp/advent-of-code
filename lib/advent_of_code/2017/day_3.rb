@@ -1,11 +1,10 @@
 class Day3
-  attr_accessor :x, :output_part_1, :output_part_2, :k, :k2_1, :k2_1_sq
+  attr_accessor :x, :output_part_1, :output_part_2, :k, :k2_1, :k2_1_sq, :matrix
 
   def initialize(x)
     self.x = x
     calculate_anchors!
     solve_part_1
-    solve_part_2
   end
 
   def solve_part_1
@@ -13,15 +12,63 @@ class Day3
   end
 
   def solve_part_2
+    sums = 75.times.reduce({}) { |m, i| m[i + 1] = Day3.new(i + 1).sum; m }
+    _, v = sums.detect do |_, s|
+      x < s
+    end
 
+    self.output_part_2 = v
+  end
+
+  def output_part_2
+    solve_part_2
+    @output_part_2
+  end
+
+  class << self
+    attr_accessor :sums
+  end
+
+  self.sums = {
+    1 => 1,
+    2 => 1,
+  }
+
+  def sum
+    if self.class.sums[x]
+      return self.class.sums[x]
+    end
+
+    s = neighbours.sum do |n|
+      Day3.new(n).sum
+    end
+
+    self.class.sums[x] = s
   end
 
   def neighbours
+    raise ArgumentError, "You gotta be kidding me..." if x < 1
+    return neighbours_for_minnows[x] if (1..9).include?(x)
+
     if (c, _ = corner?)
       return corner_neighbours(corner_functions[c].(k - 1))[c]
     end
 
     edge_neighbours(* edge?)
+  end
+
+  def neighbours_for_minnows
+    {
+      1 => [1],
+      2 => [1],
+      3 => [1, 2],
+      4 => [1, 2, 3],
+      5 => [1, 4],
+      6 => [1, 4, 5],
+      7 => [1, 6],
+      8 => [1, 2, 6, 7],
+      9 => [1, 2, 8],
+    }
   end
 
   def corner_neighbours(prev)
@@ -42,6 +89,8 @@ class Day3
     case edge
     when :right
       right_neighbours(a, d_next, d_prev)
+    when :bottom
+      bottom_neighbours(a, d_next, d_prev)
     else
       other_neighbours(a, d_next, d_prev)
     end
@@ -67,6 +116,20 @@ class Day3
     case d_next
     when 1
       [x - 1, a, a - 1]
+    else
+      case d_prev
+      when 1
+        [x - 1, x - 2, a - d_next + 1, a - d_next + 2]
+      else
+        [x - 1, a - d_next, a - d_next + 1, a - d_next + 2]
+      end
+    end
+  end
+
+  def bottom_neighbours(a, d_next, d_prev)
+    case d_next
+    when 1
+      [x - 1, a, a - 1, a + 1]
     else
       case d_prev
       when 1
