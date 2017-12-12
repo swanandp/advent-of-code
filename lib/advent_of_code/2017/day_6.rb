@@ -4,17 +4,16 @@ class Day6
   def initialize(bank)
     self.original_bank = bank
     self.bank = original_bank.dup
-    self.combinations = Set.new
+    self.combinations = {}
     self.steps = 0
-    solve_part_1
-    # solve_part_2
+    solve
   end
 
-  def solve_part_1
-    until combinations.include?(bank) do
-      combinations.add(bank)
+  def solve
+    until combinations.key?(bank) do
+      combinations[bank] = steps
       self.steps += 1
-      break if steps > 100_000
+      break if steps > 1_000_000
       largest = bank.max
       largest_index = bank.index(largest)
       dist = [largest / (bank.length - 1), 1].max
@@ -36,6 +35,7 @@ class Day6
     end
 
     self.output_part_1 = steps
+    self.output_part_2 = steps - combinations[bank]
   end
 
   def self.from_file(file_path)
