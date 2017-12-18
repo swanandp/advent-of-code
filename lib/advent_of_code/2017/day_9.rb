@@ -1,5 +1,5 @@
 class Day9
-  attr_accessor :state, :stream, :score, :output_part_1
+  attr_accessor :state, :stream, :score, :output_part_1, :cancelled_count
 
   def initialize(stream)
     self.stream = stream.strip
@@ -9,6 +9,7 @@ class Day9
 
   def reset
     self.score = 0
+    self.cancelled_count = 0
 
     self.state = {
       open_groups: 0,
@@ -62,7 +63,8 @@ class Day9
     end
 
     if in_garbage_state?
-      puts "Ignoring (#{event}, #{data}), because garbage."
+      self.cancelled_count += 1
+      puts "Ignoring (#{event}, #{data}), because garbage. So far, ignored: #{cancelled_count}."
       return
     end
 
