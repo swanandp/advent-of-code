@@ -1,5 +1,5 @@
 class Day8
-  attr_accessor :input, :parser, :parsed_input, :registers, :output_part_1
+  attr_accessor :input, :parser, :parsed_input, :registers, :output_part_1, :output_part_2
 
   def initialize(input)
     self.input = input
@@ -9,6 +9,8 @@ class Day8
   end
 
   def solve_part_1
+    max_ever = 0
+
     parsed_input.each do |instruction|
       if evaluate?(instruction)
         name = instruction[:write_register]
@@ -20,10 +22,15 @@ class Day8
             r,
             to_int(instruction[:change]),
           )
+
+        if registers[name] > max_ever
+          max_ever = registers[name]
+        end
       end
     end
 
     self.output_part_1 = registers.values.max
+    self.output_part_2 = max_ever
   end
 
   def inc(register, value)
