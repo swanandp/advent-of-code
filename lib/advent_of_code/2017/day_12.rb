@@ -22,6 +22,22 @@ class Day12
     end
   end
 
+  def number_of_groups
+    visited = {}
+    groups = 0
+
+    graph.each do |node, _|
+      if visited[node]
+        next
+      end
+
+      count(node, visited)
+      groups += 1
+    end
+
+    groups
+  end
+
   def self.from_file(file_path)
     graph = {}
 
