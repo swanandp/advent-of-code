@@ -1,27 +1,34 @@
 class Day11
-  attr_accessor :steps, :coordinates, :output_part_1
+  attr_accessor :steps, :coordinates, :output_part_1, :output_part_2, :furthest
 
   def initialize(steps)
     self.steps = steps
     reset
 
-    solve_part_1
+    solve
   end
 
-  def solve_part_1
+  def solve
     take_steps
-    self.output_part_1 = self.coordinates.max_by { |c| c.abs }.abs
+    self.output_part_1 = distance_away
+    self.output_part_2 = furthest
   end
 
   def take_steps
+    self.furthest = 0
+
     steps.each do |step|
       movement = movements[step]
       self.coordinates = movement.(*coordinates)
+
+      if distance_away > furthest
+        self.furthest = distance_away
+      end
     end
   end
 
-  def self.from_file(file_path)
-    new(CSV.parse_line(File.read(file_path)))
+  def distance_away
+    self.coordinates.max_by { |c| c.abs }.abs
   end
 
   def reset
@@ -39,5 +46,9 @@ class Day11
       "nw" => -> (x, y, z) { [x - 1, y + 1, z] },
       "sw" => -> (x, y, z) { [x - 1, y, z + 1] },
     }
+  end
+
+  def self.from_file(file_path)
+    new(CSV.parse_line(File.read(file_path)))
   end
 end
