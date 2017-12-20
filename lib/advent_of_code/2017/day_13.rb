@@ -1,5 +1,5 @@
 class Day13
-  attr_accessor :firewall, :output_part_1
+  attr_accessor :firewall, :output_part_1, :output_part_2
 
   def initialize(firewall)
     self.firewall = firewall
@@ -15,6 +15,24 @@ class Day13
       else
         0
       end
+    end
+  end
+
+  def solve_part_2
+    delay = 1 # We know we packet gets caught at 0 delay
+
+    until safe?(delay)
+      delay += 1
+    end
+
+    self.output_part_2 = delay
+  end
+
+  def safe?(delay)
+    firewall.none? do |depth, range|
+      frequency = 2 * (range - 1)
+
+      (delay + depth) % frequency == 0
     end
   end
 
