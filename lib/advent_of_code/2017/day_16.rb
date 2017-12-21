@@ -1,7 +1,7 @@
 require "scanf"
 
 class Day16
-  attr_accessor :programs, :steps, :backup, :output_part_1
+  attr_accessor :programs, :steps, :backup, :output_part_1, :output_part_2
 
   def initialize(steps)
     self.steps = steps
@@ -9,11 +9,29 @@ class Day16
   end
 
   def solve_part_1
+    dance
+
+    self.output_part_1 = programs.join
+  end
+
+  def solve_part_2
+    results = []
+    results_hash = {} # only for fast look-ups
+
+    until (key = programs.join) && results_hash.key?(key)
+      results << key
+      results_hash[key] = true
+      dance
+    end
+
+    self.output_part_2 = results[1_000_000_000 % results.size]
+    results
+  end
+
+  def dance
     steps.each do |(move, *args)|
       self.send(move, *args)
     end
-
-    self.output_part_1 = programs.join
   end
 
   def spin(x)
