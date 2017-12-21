@@ -15,6 +15,15 @@ class Day21
     pattern.join.count("#")
   end
 
+  def solve_part_2
+    18.times do
+      nice_print(pattern)
+      iterate
+    end
+
+    pattern.join.count("#")
+  end
+
   def iterate
     self.pattern = enhance
   end
