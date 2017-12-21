@@ -1,5 +1,5 @@
 class Day19
-  attr_accessor :tubes, :x, :y, :direction, :letters, :output_part_1
+  attr_accessor :tubes, :x, :y, :direction, :letters, :output_part_1, :steps
 
   def initialize(tubes)
     self.tubes = tubes
@@ -8,6 +8,7 @@ class Day19
     self.y = tubes[0].index("|")
     self.direction = :down
     self.letters = []
+    self.steps = 0
   end
 
   def solve_part_1
@@ -35,6 +36,8 @@ class Day19
     else
       fail("This shouldn't have happened: #{[x, y, step, direction]}".strip)
     end
+
+    self.steps += 1
   end
 
   def valid?(x = self.x, y = self.y)
