@@ -65,47 +65,4 @@ class Day16
 
     new(steps)
   end
-
-  class TwoSidedHash
-    attr_accessor :hash, :inverse
-
-    def initialize(hash)
-      self.hash = hash
-      self.inverse = hash.invert
-    end
-
-    def key(value)
-      inverse[value]
-    end
-
-    def value(key)
-      hash[key]
-    end
-
-    def swap_on_values(v1, v2)
-      current_v1 = inverse[v1]
-      current_v2 = inverse[v2]
-
-      tmp = current_v1
-      inverse[v1] = current_v2
-      inverse[v2] = tmp
-
-      tmp = hash[current_v1]
-      hash[current_v1] = hash[current_v2]
-      hash[current_v2] = tmp
-    end
-
-    def swap_on_keys(k1, k2)
-      current_k1 = hash[k1]
-      current_k2 = hash[k2]
-
-      tmp = current_k1
-      hash[k1] = current_k2
-      hash[k2] = tmp
-
-      tmp = inverse[current_k1]
-      inverse[current_k1] = inverse[current_k2]
-      inverse[current_k2] = tmp
-    end
-  end
 end
