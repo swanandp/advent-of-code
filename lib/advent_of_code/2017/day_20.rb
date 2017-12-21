@@ -27,14 +27,38 @@ class Day20
       dy = py + (vy * t) + 0.5 * (ay * (t ** 2))
       dz = pz + (vz * t) + 0.5 * (az * (t ** 2))
 
-      d = dx.abs + dy.abs + dz.abs
-
-      p [i, d]
-
-      d
+      dx.abs + dy.abs + dz.abs
     end
 
     self.output_part_1 = i
+  end
+
+  def solve_part_2
+    1000.times do
+      step_forward_in_time.index
+
+      self.particles = self.particles.group_by do |particle|
+        particle[:p]
+      end.select do |_, ps|
+        ps.length == 1
+      end.flat_map do |_, ps|
+        ps
+      end
+
+      puts self.particles.length
+    end
+  end
+
+  def step_forward_in_time
+    self.particles.each do |particle|
+      particle[:v][:x] += particle[:a][:x]
+      particle[:v][:y] += particle[:a][:y]
+      particle[:v][:z] += particle[:a][:z]
+
+      particle[:p][:x] += particle[:v][:x]
+      particle[:p][:y] += particle[:v][:y]
+      particle[:p][:z] += particle[:v][:z]
+    end
   end
 
   def self.from_file(file_path)
