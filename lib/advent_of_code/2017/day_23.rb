@@ -1,4 +1,5 @@
 require "scanf"
+require "prime"
 
 class Day23
   attr_accessor :instructions, :state, :output_part_1, :multiply_invoked, :pointer
@@ -27,8 +28,10 @@ class Day23
       end
   end
 
-  def solve_part_2
-    
+  def solve_part_2(b)
+    start = (b * 100 + 100000)
+
+    (start..(start + 17000)).step(17).count { |i| !Prime.prime?(i) }
   end
 
   def run_instruction(pointer = self.pointer, log = true)
