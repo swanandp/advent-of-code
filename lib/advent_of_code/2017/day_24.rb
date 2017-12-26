@@ -38,14 +38,40 @@ class Day24
     links[starting_port].map do |node_id|
       strongest_bridge_for_node(node_id, starting_port)
     end.max_by do |bridge|
-      bridge.flatten.sum
+      strength(bridge)
     end
+  end
+
+  def longest_bridge_for_port(starting_port = 0)
+    links[starting_port].map do |node_id|
+      longest_bridge_for_node(node_id, starting_port)
+    end.sort(&comparator).first
   end
 
   def strongest_bridge_for_node(node_id, starting_port)
     bridges(node_id, starting_port).max_by do |bridge|
-      bridge.flatten.sum
+      strength(bridge)
     end
+  end
+
+  def longest_bridge_for_node(node_id, starting_port)
+    bridges(node_id, starting_port).sort(&comparator).first
+  end
+
+  def comparator
+    ->(x, y) {
+      l = length(y) <=> length(x)
+
+      (l == 0) ? strength(y) <=> strength(x) : l
+    }
+  end
+
+  def strength(bridge)
+    bridge.flatten.sum
+  end
+
+  def length(bridge)
+    bridge.length
   end
 
   def parse(file_path)
