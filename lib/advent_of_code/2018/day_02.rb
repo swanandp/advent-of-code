@@ -1,0 +1,305 @@
+class Day02
+  attr_accessor :box_ids, :twos, :threes
+
+  def initialize(box_ids)
+    self.box_ids = box_ids
+    self.twos = 0
+    self.threes = 0
+  end
+
+  def part_1
+    box_ids.each do |box_id|
+      self.twos += 1 if box_id.chars.frequency.any? { |_k, v| v == 2 }
+      self.threes += 1 if box_id.chars.frequency.any? { |_k, v| v == 3 }
+    end
+
+    twos * threes
+  end
+
+  def part_2
+    id1, id2 = catch(:found) do
+      box_ids.each_with_index do |box_id, index|
+        box_ids[(index + 1)..-1].each do |other_box_id|
+          d = distance(box_id, other_box_id)
+
+          if d == 1
+            throw(:found, [box_id, other_box_id])
+          end
+        end
+      end
+    end
+
+    [id1, id2, common(id1, id2)]
+  end
+
+  def distance(id1, id2)
+    id1.chars.zip(id2.chars).count { |(c1, c2)| c1 != c2 }
+  end
+
+  def common(id1, id2)
+    id1.chars.zip(id2.chars).select { |(c1, c2)| c1 == c2 }.map { |(c1, c2)| c1 }.join
+  end
+
+  def self.run
+    instance = new(DATA.map(&:strip))
+    puts instance.part_1
+    puts instance.part_2
+  end
+end
+
+if __FILE__.include?($0)
+  require "bundler/setup"
+  Day02.run
+end
+
+__END__
+xrecqmdonskvzupalfkwhjctdb
+xrlgqmavnskvzupalfiwhjctdb
+xregqmyonskvzupalfiwhjpmdj
+areyqmyonskvzupalfiwhjcidb
+xregqpyonskvzuaalfiwhjctdy
+xwegumyonskvzuphlfiwhjctdb
+xregumymnskvzupalfiwhjctib
+xregqmyonjkvzupalfvwijctdb
+xrmgqmyonsdvzupalfiwhjcthb
+xrpgqmyonskvzupalfiwhcitdb
+xregvmysnsjvzupalfiwhjctdb
+xregqsyonskvzupgqfiwhjctdb
+qreuqmyonskvzupalfiwyjctdb
+xrecqmyenskvzupalyiwhjctdb
+xmegqmyonskvzhpalfcwhjctdb
+xiegqmyonskvzupalfkwhjjtdb
+xreaqmyofskfzupalfiwhjctdb
+xregqmypnskvzupalmiwhjltdb
+xretqmmonskvzupalfiwhwcfdb
+xrexqmkonskvzupalfiwjjctdb
+xrigqmyonskvgupplfiwhjctdb
+xregqmyotskvzupalfywhjctdm
+xcegmmyonsvvzupalfiwhjctdb
+xrezqmypnskvznpalfiwhjctdb
+xragqmyonskvzupblfiwajctdb
+xregqmyonskvzwpapfiwhjctqb
+xoegqmyoyskvzupaufiwhjctdb
+xrcgqmyjnskvzupalfcwhjctdb
+xregqmyonskvzudalfipajctdb
+xsegqmyonsklzupalwiwhjctdb
+xregqmyocskvduaalfiwhjctdb
+xhegqmyfnskvzupalflwhjctdb
+xregqmymnykvzupalfiwhjctdm
+xregqmybnskvzupacfiwdjctdb
+xaegqmlonskvzfpalfiwhjctdb
+xoegtmyonskvzupalfiwhwctdb
+xregqmyohskvzupaqfiwhjccdb
+xoegqmyonstvzupalfiwhjctbb
+mregnmyonskszupalfiwhjctdb
+xreoqmycnskvzupalfiphjctdb
+xregqmyocskvdupacfiwhjctdb
+xregqmyonskvzupajqiahjctdb
+xregqmyonslvwupalfiwhjcfdb
+xregqmyonskvzapalfiwhqcthb
+xrerqmyonskwzupalfiwhjctdt
+xrefqmfonskvzupalfiwcjctdb
+xregqmyonskvzupadfiwhjxedb
+iregqhyonskvzupaliiwhjctdb
+iregqmyotskvzucalfiwhjctdb
+xrbgqmaonrkvzupalfiwhjctdb
+xregqmyonskvzupalfixhdctdf
+xrehqmyonskvzupalfiwijctdd
+xvegqmyonskvzupaleuwhjctdb
+xregqmyiyskvzupalfiwqjctdb
+hregqmyonskvzupaxfiwhjptdb
+xregamyznskbzupalfiwhjctdb
+xreyqmyonskvgupalziwhjctdb
+xregqmysnskvzupalfiwhgctdu
+xojgqmyonskvzupalfiwbjctdb
+xrkgqmyonskvlupalfiwhjcwdb
+xregqmyonwkvxupalfiwajctdb
+xregqmyonsuvzupalfjwhjcxdb
+xregqmyonskgzucalfiwhjstdb
+xaegqmyonfkvzupalfiwhjcttb
+xlegqmyonskvzupazfiwhjctqb
+xrejqmyonskvzqpaldiwhjctdb
+xreguryonskvzupalfiwhjctdz
+xregqsyoeskvzupalfiwhjctdt
+xregqmyonskvzubalfirhjctdp
+xrepqmymnskvzupadfiwhjctdb
+xregqayonskvzuoalfichjctdb
+xreqqmyonskvzunalfiwojctdb
+xregqmyonsivzufalciwhjctdb
+xregqqeonskvzupanfiwhjctdb
+xoegqmyunskvzppalfiwhjctdb
+xregqmyonskvzupalfqwhnftdb
+xregqmyonskvzuralkiwhjcudb
+xrwgqmymnskvzupalfiwhjcgdb
+xvrgqmyonskvzupalfiwhjcthb
+xregemyonskkzupalfiwhjctbb
+xregqmyonsevzupalfiwhjjtdl
+xregqmyonckvcupajfiwhjctdb
+xregqmysnskvzunalfnwhjctdb
+xreowmyonskvkupalfiwhjctdb
+xregqmyonskvjupalfiwhjytdr
+xregqmyonskyzupaffiwhmctdb
+xrsgqmyonszvzupmlfiwhjctdb
+xzegqmyonskvnupalfiwfjctdb
+qregqmyonskvzupalfiwhrctjb
+xpegqmyonsivzupqlfiwhjctdb
+xregqmyoyskrzupalfiwhjctdx
+xregqmyonsqvzupalfiwhjdndb
+xregjmyonskvzppalfiwhjcgdb
+xregqmyziskvzupalfiwhjctib
+xregqmyonmkvbupalfiwhjckdb
+xtegamyonskvzupalniwhjctdb
+xregqpyonskvzhpwlfiwhjctdb
+xvegqmfonskvzupalfiwhjcadb
+xregqmyonskvzupaysiwhjctxb
+xrejqmyonudvzupalfiwhjctdb
+llegqmyonskvzbpalfiwhjctdb
+tcegqmbonskvzupalfiwhjctdb
+lregqmyohskvzupalfiwhjcttb
+xrngqmcfnskvzupalfiwhjctdb
+xregqmyonspvzuuplfiwhjctdb
+xrxgqmyonslvzupalfiwhjctdo
+xregqmyonskvzulalfuwhjdtdb
+xregqmnonskvzupalfvwhjckdb
+xregqbyfnskvzupaltiwhjctdb
+xregqmyodsovzwpalfiwhjctdb
+xregomyonskvhrpalfiwhjctdb
+xregqmfdnskvzupalliwhjctdb
+xregqmyonskvzupaabithjctdb
+xrngamyonskvzupalfiwhjcttb
+xrhgqmyonskvzupaldifhjctdb
+xrygzmyonskvzupatfiwhjctdb
+xregqmyonskvzupiqtiwhjctdb
+xregqmyonfkvzupalfiwxjcsdb
+xregqsyunskvzupalfiwhjctde
+xrzgqmyolskvzupasfiwhjctdb
+xgegqmyoyskvzupalfiwfjctdb
+xrvgqlyohskvzupalfiwhjctdb
+xregcmyonskvzuprlyiwhjctdb
+xregqmyonskvwjpalfiwsjctdb
+xrfgqmyonskvzupalfidhactdb
+xcegqmyonwkvzdpalfiwhjctdb
+nregqmyrnskvzupalciwhjctdb
+xcegqmyonskvzvpalfiwhjctdj
+xregqmyonskvzupqssiwhjctdb
+xregcmyonskvzupalfinhjutdb
+xregqmyonskvzupzlfiwcjctnb
+xnegqmyozskvzbpalfiwhjctdb
+xregvmponskvzupalfiwhsctdb
+xregqmyonskvpupalqichjctdb
+xreqqmyonskvzupauuiwhjctdb
+xregqryonskvzupatfiwhjctyb
+hregqmyonokvzupalfiwhmctdb
+xreuqmionckvzupalfiwhjctdb
+xregqmyoiskvzupanfiwhjntdb
+xrdgqmronskvzupaluiwhjctdb
+xadgqmyunskvzupalfiwhjctdb
+eregqmzonskvzupakfiwhjctdb
+xiegqmyonskvnupblfiwhjctdb
+yregqmzonskvzupalfiwhjotdb
+xregqmyonskvjupalfiwhjhtvb
+wregqmyonskvzzprlfiwhjctdb
+xregqmyovskvzupalgiuhjctdb
+xregqmyonskjzupelfuwhjctdb
+xregqmysuskvpupalfiwhjctdb
+xrebqkyonskvzupalfiwpjctdb
+xregcmyonskvzipalfiwhjcttb
+xregqmyonskdyupalfiwgjctdb
+xregcmyonskvzupalfiwijctnb
+xregqmyonsovdupalfrwhjctdb
+xregqmaonskvzupalnkwhjctdb
+xregqmysnfkvzupalfiwhictdb
+xregqmyonswvzupalfiyhjctdf
+xreoqmyrnskvzupalfihhjctdb
+tregqmydnskvzupalfizhjctdb
+xregxmyonykvzupalfnwhjctdb
+xzegqnyonskuzupalfiwhjctdb
+xregqmfonszvvupalfiwhjctdb
+xrerqmyjnskvzupalfiwhpctdb
+xregqmyanskvzupalffphjctdb
+rregqmyogskvzupalfiehjctdb
+xrpgqmyonspvzupalfiwgjctdb
+xuegqmppnskvzupalfiwhjctdb
+xregqmyonskvzqpalsiwhjhtdb
+xregqzyonskvzkpalfiwujctdb
+xrdgqmyonskvzupglfiwhjctdu
+xregqmyonskqzupahciwhjctdb
+treqqmyonskvzupalfiwhjcqdb
+vlegqmyonskvzupalfiwhjwtdb
+xregjmyonskviupglfiwhjctdb
+xreggmyanskvzupalfiwhjcydb
+xregqmybnskvzuprlfiwhjmtdb
+xrsgqmyonskizupagfiwhjctdb
+xregqmyenskvzupalfvwhjctib
+lrygqmyonsrvzupalfiwhjctdb
+xregqmjonskvqupalfiwhjctdu
+xregqmyonsknzmpzlfiwhjctdb
+xregqmyonhkvzupllfiwhjctdz
+xregqmronskvdumalfiwhjctdb
+xrpgqmyonskvzupalfhwhjhtdb
+xfegqmeonskvzupasfiwhjctdb
+xregqqyonskvzrpalfiwijctdb
+xretqmmonskvzupalfiwhjcfdb
+xregqmyonskvznpalniwhjztdb
+xregqmyqnskvzuoalfiwhhctdb
+xregqmyonsbvzupalviwhjxtdb
+xregqmyonskvzupazmiwhhctdb
+xregqmyosskvzupalflwhjctdw
+xtegqmyonskvzupamciwhjctdb
+xregamyonskvzbpalfiwhqctdb
+xregqmgonskvzupalfiwhictxb
+xregqmyonskvjupvlfnwhjctdb
+xrthqmyonskvzupalfiwhjctub
+xrexqmyoyskvzupalfiwhjcadb
+xvegqmyonskvxupalfiwhjztdb
+xregqmyonskgzupalhiwhjptdb
+xregqmysnskvzufalpiwhjctdb
+xregqmyonskvbipalfighjctdb
+xregqmyonskvzupylfiwhjwvdb
+gregqmyonskvzupalfikhjctdt
+ujegqmyonskvzupalfiwhjctlb
+nreqqmyonskjzupalfiwhjctdb
+xregqmyonskvzupanfbwhjchdb
+xregqyyoeskwzupalfiwhjctdb
+xregqmyokskvzgpalfiwhnctdb
+lregqmyonskvzupalfawsjctdb
+xtegqmyonskvzmpalfiwhjctmb
+xtegqvyonskvzupalfiwhjdtdb
+xpegqpyonekvzupalfiwhjctdb
+qregqmyonskvzupalfiwmjctdn
+xregqnyosskvzupalfibhjctdb
+xregqmyonsknzupalflwhjctfb
+xregqmxoyskvzuealfiwhjctdb
+xregdmyoeskvzupalfiwhfctdb
+xremmmyonskvzupalfiwhxctdb
+xregqmconskvzupylfuwhjctdb
+xregqmyonskvzupawiiwhictdb
+xlegsmyonskvzupalfiwhbctdb
+xregqmyonsavzopalyiwhjctdb
+xregqmyonskczupalfibhvctdb
+xregqmyonskvzvpalfiunjctdb
+xregqmyonskvdupalfiwhjczdp
+xregqmyonskvzupklfswhhctdb
+xrelqmyonskvzupalyiwhjctdi
+xrcgqmyonskvzupalfieqjctdb
+xregqmnonskvzupacfewhjctdb
+xrwgqmyonskvzuealfiwhcctdb
+xregqiyonsevzmpalfiwhjctdb
+xregqmyonjyvzupalfiwhjckdb
+xregqmyonyklzupadfiwhjctdb
+xregqmyanskvzupolfiwhjctpb
+xdbgqmyonskvzupslfiwhjctdb
+xregqmhonykvzupalfawhjctdb
+xregqmqonsivzupalfifhjctdb
+xregqgyonsrvzupalfiwhjctib
+xregqmyofskvzupalfiwlfctdb
+xregqmyovskvzupllftwhjctdb
+xregqmyonskvzupaciiwhuctdb
+xregqmyonsdvzuhalfiwhjhtdb
+xreiqmyonskvzupalfiwhncldb
+xregqmyongkvzugalfiwhjctxb
+xregqsyonskvzrpmlfiwhjctdb
+xrogqmyonskvzxpalfiwhbctdb
+xregqmkonskvzuqalfiwhjptdb
+xregqmyonskvvxpalfiwhactdb
+xregqmyonskvzupsliiwhwctdb
