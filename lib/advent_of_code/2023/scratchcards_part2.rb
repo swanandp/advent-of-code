@@ -10,19 +10,25 @@ def sample_input
 end
 
 def points(input)
-  sum = 0
-  input.each do |line|
+  scratch_cards = [1] * input.length
+
+  input.each_with_index do |line, index|
     _, tail = line.split(":")
     winning, in_hand = tail.split("|").map(&:strip).map { |l| l.split(/\s+/).map(&:strip).map(&:to_i) }
     winning_count = (winning & in_hand).length
-    sum += (2 ** (winning_count - 1)) if winning_count > 0
+    count = scratch_cards[index]
+
+    winning_count.times do |i|
+      scratch_cards[index + i + 1] += (1 * count)
+    end
+
   end
 
-  sum
+  scratch_cards
 end
 
 # p points(sample_input).sum
-p points(DATA.read.split("\n").map(&:strip))
+p points(DATA.read.split("\n").map(&:strip)).sum
 
 __END__
 Card   1: 99 71 95 70 36 79 78 84 31 10 |  5 45 54 83  3 38 89 35 80 49 76 15 63 20 21 94 65 55 44  4 75 56 85 92 90
