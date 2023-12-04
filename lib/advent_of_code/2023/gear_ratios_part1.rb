@@ -27,8 +27,6 @@ end
 
 def sum_of_parts(parts)
   sum = 0
-  selected = {}
-  rejected = {}
 
   parts.each_with_index do |part, i|
     number_stack = []
