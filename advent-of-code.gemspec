@@ -33,6 +33,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "rake"
   spec.add_development_dependency "pry"
   spec.add_development_dependency "scanf"
+  spec.add_development_dependency "sorted_set"
   spec.add_development_dependency "awesome_print"
   spec.add_development_dependency "terminal-table"
   spec.add_development_dependency "rspec"
