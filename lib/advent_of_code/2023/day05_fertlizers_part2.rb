@@ -1,11 +1,5 @@
 require 'sorted_set'
 
-@debug = false
-
-def log(*args)
-  pp args if @debug
-end
-
 def sample_input
   <<~INPUT
     seeds: 79 14 55 13
@@ -67,37 +61,27 @@ def lowest_location(input)
 
   seeds.map do |seed|
     starting_seed = seed
-    log "Trying seed: #{starting_seed}"
 
     lookup_tables.each do |(key, lookup)|
       rindex = key.rindex { |x| x < starting_seed }
       lindex = key.rindex { |x| starting_seed < x }
-      log ["working with", key, lookup, rindex, lindex]
 
       starting_seed =
-        if lookup.key?(starting_seed)
-          lookup[starting_seed]
-          log ["Found LOOKUP: root: #{seed}, current: #{starting_seed}, new: #{lookup[starting_seed]}"]
-          lookup[starting_seed]
-        elsif rindex.nil? || lindex.nil? # either too low or too large
-          log ["No RINDEX: root: #{seed}, current: #{starting_seed}, new: #{starting_seed}"]
+        if rindex.nil? || lindex.nil? # either too low or too large
           starting_seed
         else
-          new_starting_seed = starting_seed + (lookup[key[rindex]] - key[rindex])
-          log ["Transform: root: #{seed}, current: #{starting_seed}, new: #{new_starting_seed}"]
-          new_starting_seed
+          starting_seed + (lookup[key[rindex]] - key[rindex])
         end
 
       starting_seed
     end
 
-    log "FINISHED SEED #{seed}, with #{starting_seed}"
     starting_seed
   end.min
 end
 
-p lowest_location(sample_input)
-# p lowest_location(DATA.read)
+# p lowest_location(sample_input)
+p lowest_location(DATA.read)
 
 __END__
 seeds: 1187290020 247767461 40283135 64738286 2044483296 66221787 1777809491 103070898 108732160 261552692 3810626561 257826205 3045614911 65672948 744199732 300163578 3438684365 82800966 2808575117 229295075
