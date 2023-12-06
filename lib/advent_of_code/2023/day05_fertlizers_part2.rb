@@ -1,5 +1,11 @@
 require 'sorted_set'
 
+@debug = false
+
+def log(*args)
+  pp args if @debug
+end
+
 def sample_input
   <<~INPUT
     seeds: 79 14 55 13
@@ -40,44 +46,45 @@ end
 
 def lowest_location(input)
   seed_input, *map_inputs = input.split("\n\n")
-  seeds = seed_input.split(/:\s+/).last.split(/\s+/).map(&:to_i)
+  seed_pairs = seed_input.split(/:\s+/).last.split(/\s+/).map(&:to_i).each_slice(2).map { |x, y| [x, x + y] }
 
-  lookup_tables = map_inputs.map do |map_input|
-    _, range_inputs = map_input.split(/\s+map:\s+/)
-    key = SortedSet.new
-    lookup = {}
-
-    range_inputs.split("\n").map { |l| l.split(/\s+/).map(&:to_i) }.each do |(d, s, w)|
-      # d, s, w: dest_start, source_start, range_width
-      key << s
-      lookup[s] = d
-
-      key << s + w - 1
-      lookup[s + w - 1] = d + w - 1
-    end
-
-    [key.to_a, lookup]
+  conversion_tables = map_inputs.map do |map_input|
+    _, *range_inputs = map_input.split("\n")
+    range_inputs.map { |r| r.split(" ").map(&:to_i) }
   end
 
-  seeds.map do |seed|
-    starting_seed = seed
+  conversion_tables.each do |table|
+    new_seeds = []
 
-    lookup_tables.each do |(key, lookup)|
-      rindex = key.rindex { |x| x < starting_seed }
-      lindex = key.rindex { |x| starting_seed < x }
+    until seed_pairs.empty? do
+      seed_start, seed_end = seed_pairs.pop
+      match = false
 
-      starting_seed =
-        if rindex.nil? || lindex.nil? # either too low or too large
-          starting_seed
-        else
-          starting_seed + (lookup[key[rindex]] - key[rindex])
+      table.each do |(d, s, w)|
+        overlap_start = [s, seed_start].max
+        overlap_end = [seed_end, s + w].min
+
+        if overlap_start < overlap_end
+          match = true
+          new_seeds << [overlap_start - (s - d), overlap_end - (s - d)]
+
+          if overlap_start > seed_start
+            seed_pairs << [seed_start, overlap_start] # from seed start to overlap start
+          end
+
+          if seed_end > overlap_end
+            seed_pairs << [overlap_end, seed_end] # from seed start to overlap start
+          end
         end
+      end
 
-      starting_seed
+      new_seeds << [seed_start, seed_end] unless match
     end
 
-    starting_seed
-  end.min
+    seed_pairs = new_seeds
+  end
+
+  seed_pairs.sort.uniq.first.first
 end
 
 # p lowest_location(sample_input)
