@@ -11,8 +11,6 @@ def combinations(input)
   times = times_input.split(":").map(&:strip).last.split(/\s+/).map(&:to_i)
   distances = distances_input.split(":").map(&:strip).last.split(/\s+/).map(&:to_i)
 
-  [times, distances]
-
   times.each_with_index.map do |t, i|
     d = distances[i]
     l = 0
