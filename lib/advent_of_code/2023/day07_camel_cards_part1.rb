@@ -8,16 +8,6 @@ def sample_input
   INPUT
 end
 
-def sample_input_2
-  <<~INPUT
-    32T3K 765
-    T55J5 684
-    KK677 28
-    QQJQA 220
-    QQQJA 483
-  INPUT
-end
-
 def hand_to_hex(h)
   @card_substitutions ||= {
     "A" => "E",
