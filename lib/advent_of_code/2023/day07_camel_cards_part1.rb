@@ -72,7 +72,8 @@ def winnings(input)
     .split("\n")
     .map { |line|
       hand, bid = line.split(/\s+/)
-      [hand_type(hand), hand_to_hex(hand), bid.to_i]
+      new_hand = hand_to_hex(hand)
+      [hand_type(new_hand), new_hand, bid.to_i]
     }
     .sort
     .each_with_index
@@ -85,8 +86,6 @@ end
 
 pp winnings(sample_input)
 pp winnings(DATA.read)
-
-
 
 __END__
 T33AA 613
