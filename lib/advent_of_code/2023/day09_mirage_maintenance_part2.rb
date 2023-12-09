@@ -23,7 +23,7 @@ end
 #        0  0  0  0
 def previous_number(numbers)
   return 0 if numbers.all?(:zero)
-  numbers.first - previous_number(diffs_recursive(numbers))
+  numbers.first - previous_number(numbers.each_cons(2).map { |x, y| y - x })
 end
 
 def sum_of_extrapolated_numbers(input)
