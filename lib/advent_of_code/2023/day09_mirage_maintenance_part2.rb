@@ -6,12 +6,24 @@ def sample_input
   INPUT
 end
 
+#  0  | 3  6  9 12 15
+#     |    3  3  3  3
+#          3  3  3  3
+def diffs_recursive(numbers)
+  head, *tail = numbers
+  return [] if head.nil? || tail.empty?
+  return [tail.first - head] if tail.length == 1
+
+  diffs = diffs_recursive(tail)
+  [tail.first - head, *diffs]
+end
+
 #  0  3  6  9 12 15
 #     3  3  3  3  3
 #        0  0  0  0
 def previous_number(numbers)
   return 0 if numbers.all?(:zero)
-  numbers.first - previous_number(numbers.each_cons(2).map { |x, y| y - x })
+  numbers.first - previous_number(diffs_recursive(numbers))
 end
 
 def sum_of_extrapolated_numbers(input)
@@ -22,7 +34,6 @@ end
 
 pp sum_of_extrapolated_numbers(sample_input)
 pp sum_of_extrapolated_numbers(DATA.read)
-
 
 __END__
 26 35 42 63 136 327 729 1457 2648 4480 7229 11394 17952 28881 48234 84291 153739 289701 557511 1087187 2143197
