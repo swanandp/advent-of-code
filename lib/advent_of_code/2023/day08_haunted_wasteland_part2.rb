@@ -2,55 +2,49 @@ require "scanf"
 
 def sample_input_1
   <<~INPUT
-    RL
+    LR
 
-    AAA = (BBB, CCC)
-    BBB = (DDD, EEE)
-    CCC = (ZZZ, GGG)
-    DDD = (DDD, DDD)
-    EEE = (EEE, EEE)
-    GGG = (GGG, GGG)
-    ZZZ = (ZZZ, ZZZ)
-  INPUT
-end
-
-def sample_input_2
-  <<~INPUT
-    LLR
-
-    AAA = (BBB, BBB)
-    BBB = (AAA, ZZZ)
-    ZZZ = (ZZZ, ZZZ)
+    11A = (11B, XXX)
+    11B = (XXX, 11Z)
+    11Z = (11B, XXX)
+    22A = (22B, XXX)
+    22B = (22C, 22C)
+    22C = (22Z, 22Z)
+    22Z = (22B, 22B)
+    XXX = (XXX, XXX)
   INPUT
 end
 
 def steps(input)
   step_seq, *node_inputs = input.split(/\n+/)
-  src = "AAA"
-  dest = "ZZZ"
+  sources = []
 
   nodes = node_inputs.reduce({}) { |acc, line|
     a, b, c = line.scanf("%s = (%3s, %3s)")
+    sources << a if a.end_with?("A")
     acc[a] = { "L" => b, "R" => c }
     acc
   }
 
-  step_count = 0
-  current_node = nodes[src]
+  step_count_per_source = sources.map do |src|
+    step_count = 0
+    current_node = nodes[src]
 
-  step_seq.chars.cycle.each do |step|
-    next_node_name = current_node[step]
-    step_count += 1
-    break if next_node_name == dest
-    current_node = nodes[next_node_name]
-    # raise "Infinite loop" if current_node["L"] == current_node["R"]
+    step_seq.chars.cycle.each do |step|
+      next_node_name = current_node[step]
+      step_count += 1
+      break if next_node_name.end_with?("Z")
+      current_node = nodes[next_node_name]
+      # raise "Infinite loop" if current_node["L"] == current_node["R"]
+    end
+
+    step_count
   end
 
-  step_count
+  step_count_per_source.reduce(1) { |acc, c| acc.lcm(c) }
 end
 
 pp steps(sample_input_1)
-pp steps(sample_input_2)
 pp steps(DATA.read)
 
 __END__
