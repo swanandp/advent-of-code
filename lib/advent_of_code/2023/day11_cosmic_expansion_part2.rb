@@ -67,7 +67,7 @@ def sum(input)
     re = empty_rows.count { |r| r.between?(*[g1[0], g2[0]].sort) } # row expansion
     ce = empty_columns.count { |r| r.between?(*[g1[1], g2[1]].sort) } # row expansion
 
-    sum += (rd.abs + re + cd.abs + ce)
+    sum += (rd.abs + (1000000 - 1) * re + cd.abs + (1000000 - 1) * ce)
     sum
   end
 end
