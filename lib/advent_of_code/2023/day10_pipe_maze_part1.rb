@@ -81,6 +81,8 @@ def loop_distance(maze, start, pipe)
     loop_length += 1
   end
 
+  visited[l[0]][l[1]] = loop_length
+
   [loop_length, visited]
 end
 

@@ -1,10 +1,14 @@
 def sample_input_1
   <<~INPUT
-    .....
-    .S-7.
-    .|.|.
-    .L-J.
-    .....
+    ...........
+    .S-------7.
+    .|F-----7|.
+    .||.....||.
+    .||.....||.
+    .|L-7.F-J|.
+    .|..|.|..|.
+    .L--J.L--J.
+    ...........
   INPUT
 end
 
@@ -18,19 +22,70 @@ end
 
 def sample_input_2
   <<~INPUT
-    ..F7.
-    .FJ|.
-    SJ.L7
-    |F--J
-    LJ...
+    ..........
+    .S------7.
+    .|F----7|.
+    .||OOOO||.
+    .||OOOO||.
+    .|L-7F-J|.
+    .|II||II|.
+    .L--JL--J.
+    ..........
   INPUT
 end
 
 def sample_maze_2
   [
     sample_input_2.split("\n").map { |line| line.split("") },
-    [2, 0],
+    [1, 1],
     "F",
+  ]
+end
+
+def sample_input_3
+  <<~INPUT
+    .F----7F7F7F7F-7....
+    .|F--7||||||||FJ....
+    .||.FJ||||||||L7....
+    FJL7L7LJLJ||LJ.L-7..
+    L--J.L7...LJS7F-7L7.
+    ....F-J..F7FJ|L7L7L7
+    ....L7.F7||L7|.L7L7|
+    .....|FJLJ|FJ|F7|.LJ
+    ....FJL-7.||.||||...
+    ....L---J.LJ.LJLJ...
+  INPUT
+end
+
+def sample_maze_3
+  [
+    sample_input_3.split("\n").map { |line| line.split("") },
+    [4, 12],
+    "F",
+  ]
+end
+
+def sample_input_4
+  <<~INPUT
+    FF7FSF7F7F7F7F7F---7
+    L|LJ||||||||||||F--J
+    FL-7LJLJ||||||LJL-77
+    F--JF--7||LJLJ7F7FJ-
+    L---JF-JLJ.||-FJLJJ7
+    |F|F-JF---7F7-L7L|7|
+    |FFJF7L7F-JF7|JL---7
+    7-L-JL7||F7|L7F-7F7|
+    L.L7LFJ|||||FJL7||LJ
+    L7JLJL-JLJLJL--JLJ.L
+    L7JLJL-JLJLJL--JLJ.L
+  INPUT
+end
+
+def sample_maze_4
+  [
+    sample_input_4.split("\n").map { |line| line.split("") },
+    [0, 4],
+    "7",
   ]
 end
 
@@ -58,8 +113,6 @@ def neighbours(maze, x, y)
   end.compact
 end
 
-def traverse(maze, visited, location) end
-
 def loop_distance(maze, start, pipe)
   x, y = start
   loop_length = 0
@@ -81,13 +134,80 @@ def loop_distance(maze, start, pipe)
     loop_length += 1
   end
 
-  [loop_length, visited]
+  visited[l[0]][l[1]] = loop_length
+
+  # clear the maze, throw away the junk pipes
+  visited.each_with_index do |row, i|
+    row.each_with_index do |col, j|
+      if col == -1
+        maze[i][j] = "."
+      end
+    end
+  end
+
+  # loop through visited and ray trace
+  inside = 0
+
+  visited.each_with_index do |row, i|
+    row.each_with_index do |col, j|
+      # ignore edges, they cannot be inside the loop
+      next if i == 0 || i == (visited.length - 1)
+      next if j == 0 || j == (row.length - 1)
+      next if col > -1 # it's part of the loop, ignore it
+
+      t0, t1 = [j, row.length - 1]
+
+      # F--J - 1
+      # F--7 - 2
+      # L--J - 2
+      # L--7 - 1
+      f_open = false
+      l_open = false
+      intersections = 0
+
+      maze[i][t0..t1].each do |m|
+        if m == "F"
+          f_open = true
+        end
+
+        case m
+        when "|"
+          intersections += 1
+        when "-"
+          # do nothing
+        when "F"
+          f_open = true
+          l_open = false
+        when "L"
+          l_open = true
+          f_open = false
+        when "J"
+          intersections += 1 if f_open
+          intersections += 2 if l_open
+          f_open = false
+          l_open = false
+        when "7"
+          intersections += 2 if f_open
+          intersections += 1 if l_open
+          f_open = false
+          l_open = false
+        else
+          intersections
+        end
+      end
+    end
+  end
+
+  inside
 end
 
 pp loop_distance(*sample_maze_1)
 pp loop_distance(*sample_maze_2)
-pp loop_distance(*main_maze)
-# puts "Starting at: #{start} with character #{maze.dig(*start)}"
+pp loop_distance(*sample_maze_3)
+pp loop_distance(*sample_maze_4)
+#
+inside, _, _ = loop_distance(*main_maze)
+pp [inside]
 
 __END__
 F|--L7J.L7|7|-LF7-7--7F7--7F7J--F7J.7F|J7.F7|.-FJF|J.F7F--LFF.7.F7JFL-JFJ7F|.FL77-F7-J.F7-F7L-FF-F-L7F-|7.FL7-7F|7F7.F-F|-77FJ7FF-J777.|FFFL
