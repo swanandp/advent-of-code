@@ -38,4 +38,5 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "terminal-table"
   spec.add_development_dependency "rspec"
   spec.add_development_dependency "parslet"
+  spec.add_development_dependency "text"
 end

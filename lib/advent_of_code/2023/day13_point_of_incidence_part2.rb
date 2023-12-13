@@ -1,3 +1,5 @@
+require "text"
+
 def sample_input
   <<~INPUT
     #.##..##.
@@ -18,20 +20,33 @@ def sample_input
   INPUT
 end
 
+def correct(c)
+  @chars ||= { "." => "#", "#" => "." }
+  @chars[c]
+end
+
 def reflections(block)
   matching_rows = []
   block.each_cons(2).with_index do |(l1, l2), i|
     if l1 == l2
       matching_rows << i
+    elsif Text::Levenshtein.distance(l1.join, l2.join) == 1
+      matching_rows << i
     end
   end
 
-  matching_rows.select do |i|
+  matching_rows.detect do |i|
     pairs = i.downto(0).map { |x| [x, i + (i - x + 1)] }.select { |(x, y)| 0 <= x && y < block.length }
 
-    pairs.all? { |(r1, r2)|
+    match_count = pairs.count { |(r1, r2)|
       block[r1] == block[r2]
     }
+
+    smudge_count = pairs.count do |(r1, r2)|
+      Text::Levenshtein.distance(block[r1].join, block[r2].join) == 1
+    end
+
+    smudge_count == 1 && pairs.length == match_count + smudge_count
   end
 end
 
@@ -40,11 +55,14 @@ def summarize(input)
 
   input.split("\n\n").each do |pattern|
     block = pattern.split("\n").map { |l| l.split("") }
-    horizontals = reflections(block)
-    verticals = reflections(block.transpose)
+    h_correction = reflections(block)
 
-    block_sum = 100 * horizontals.map { |h| h + 1 }.sum + verticals.map { |v| v + 1 }.sum
-    sum += block_sum
+    if h_correction
+      sum += (100 * (h_correction + 1))
+    else
+      v_correction = reflections(block.transpose)
+      sum += (v_correction + 1)
+    end
   end
 
   sum
