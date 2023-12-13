@@ -20,11 +20,6 @@ def sample_input
   INPUT
 end
 
-def correct(c)
-  @chars ||= { "." => "#", "#" => "." }
-  @chars[c]
-end
-
 def reflections(block)
   matching_rows = []
   block.each_cons(2).with_index do |(l1, l2), i|
