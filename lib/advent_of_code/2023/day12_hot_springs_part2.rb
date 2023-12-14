@@ -9,6 +9,8 @@ def sample_input
   INPUT
 end
 
+@cache = {}
+
 def possibilities(record, parity)
   # pp ["received", record, parity]
   if record.nil? || record.empty?
@@ -17,6 +19,10 @@ def possibilities(record, parity)
 
   if parity.empty?
     return (record.include?("#") ? 0 : 1)
+  end
+
+  if @cache[[record, parity]]
+    return @cache[[record, parity]]
   end
 
   result = 0
@@ -36,6 +42,7 @@ def possibilities(record, parity)
   end
 
   # pp ["finished: #{result}", record, parity]
+  @cache[[record, parity]] = result
   result
 end
 
@@ -54,6 +61,7 @@ def sum_of_arrangements(input)
 end
 
 pp sum_of_arrangements(sample_input)
+@cache = {}
 pp sum_of_arrangements(DATA.read)
 
 __END__
