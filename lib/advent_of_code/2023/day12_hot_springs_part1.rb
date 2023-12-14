@@ -9,39 +9,52 @@ def sample_input
   INPUT
 end
 
-def possible?(records, parity)
-  parity_matched = []
-  hash_open = ""
-
-  records.each do |r|
-
+def possibilities(record, parity)
+  # pp ["received", record, parity]
+  if record.nil? || record.empty?
+    return (parity.empty? ? 1 : 0)
   end
+
+  if parity.empty?
+    return (record.include?("#") ? 0 : 1)
+  end
+
+  result = 0
+
+  if record[0] == "." || record[0] == "?"
+    # pp ["leading .?", record, parity]
+    result += possibilities(record[1..], parity.dup)
+  end
+
+  if record[0] == "#" || record[0] == "?"
+    # pp ["leading #?", record, parity]
+    if !(record[0...parity.first].include?(".")) &&
+      parity.first <= record.length &&
+      (parity[0] == record.length || record[parity.first] != "#")
+      result += possibilities((record[(parity[0] + 1)..]), parity[1..].dup)
+    end
+  end
+
+  # pp ["finished: #{result}", record, parity]
+  result
 end
 
 def sum_of_arrangements(input)
   sum = 0
 
-  input.split("\n").each do |l|
-    record_input, parity_input = l.split(/\s+/)
+  input.split("\n").map do |l|
+    record, parity_input = l.split(/\s+/)
     parity = parity_input.split(",").map(&:to_i)
-    records = record_input.chars
-    possibilities = 0
-
-    records.each_with_index do |c, i|
-      next unless c == "?"
-
-      possible_1 = [*records[0...(i)], "#", *records[(i - 1)...records.length]].join
-    end
-
-    options = %w[# .] # assume record is solvable
-
-    while options.length > 0
-      trial = options.pop
-
-    end
+    count = possibilities(([record] * 5).join("?"), parity * 5)
+    # pp ["final", record, parity, count]
+    sum += count
   end
 
+  sum
 end
+
+pp sum_of_arrangements(sample_input)
+pp sum_of_arrangements(DATA.read)
 
 __END__
 ?#.?..?.##.###? 2,1,2,3
