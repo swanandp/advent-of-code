@@ -1,5 +1,3 @@
-require "scanf"
-
 def sample_input
   <<~INPUT
     rn=1,cm-,qp=3,cm=2,qp-,pc=4,ot=9,ab=5,pc-,pc=6,ot=7  
@@ -7,13 +5,9 @@ def sample_input
 end
 
 def value(label)
-  current_value = 0
-
-  label.chars.each do |c|
-    current_value = (17 * (current_value + c.ord)) % 256
+  label.chars.reduce(0) do |current_value, c|
+    (17 * (current_value + c.ord)) % 256
   end
-
-  current_value
 end
 
 def solve(input)
@@ -33,25 +27,18 @@ def solve(input)
       else
         boxes[index] << [label, focal_length.to_i]
       end
-      # pp ["stored", index, boxes]
     when true
-      # pp ["before deleting", boxes[index]]
       boxes[index]&.delete_if { |(l, f)| l == label }
-      # pp ["deleted", boxes]
     else
       raise "UnmatchedOperation for #{seq} [#{label}, #{focal_length}]"
     end
   end
 
-  sum = 0
-
-  boxes.each_with_index do |box, i|
-    box&.each_with_index do |(l, f), j|
-      sum += (i + 1) * (j + 1) * f
-    end
+  boxes.each_with_index.sum do |box, i|
+    box&.each_with_index&.sum do |(l, f), j|
+      (i + 1) * (j + 1) * f
+    end.to_i
   end
-
-  [sum]
 end
 
 pp solve(sample_input)
