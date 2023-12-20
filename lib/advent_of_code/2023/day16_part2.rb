@@ -133,13 +133,21 @@ def energize(tiles, energized, beams = [])
   end
 end
 
+def starting_beams(max_i, max_j)
+  [0].product(0.upto(max_j).to_a).map { |(r, c)| [:south, r, c] } +
+    [max_i].product(0.upto(max_j).to_a).map { |(r, c)| [:north, r, c] } +
+    0.upto(max_i).to_a.product([0]).map { |(r, c)| [:east, r, c] } +
+    0.upto(max_i).to_a.product([max_j]).map { |(r, c)| [:west, r, c] }
+end
+
 def solve(input)
   tiles = input.split("\n").map { |l| l.strip.split("") }
-  energized = tiles.map { |l| l.map { |_| Hash.new } }
-  beams = [[:east, 0, 0]]
-  energize(tiles, energized, beams)
 
-  count_energy(energized)
+  starting_beams(tiles.length - 1, tiles.first.length - 1).map do |beam|
+    energized = tiles.map { |l| l.map { |_| Hash.new } }
+    energize(tiles, energized, [beam])
+    count_energy(energized)
+  end.max
 end
 
 pp solve(sample_input)
