@@ -19,8 +19,8 @@ class Day18
     }
   end
 
-  def self.solve_part_2(file_path)
-    instructions = parse_file(file_path)
+  def self.solve_part_2(input)
+    instructions = parse_file(input)
     Solver.new(instructions)
   end
 
@@ -155,39 +155,96 @@ class Day18
     self.registers[r] = value
   end
 
-  def self.parse_file(file_path)
+  def self.parse_file(input)
     instructions = []
 
-    File.open(file_path, "r") do |f|
-      while (line = f.gets)
-        match = line.strip.match(
-          %r{
+    input.split("\n").each do |line|
+      match = line.strip.match(
+        %r{
           ^(?<instruction>[a-z]{3})\s
            ((?<first_num_arg>-?[0-9]+)|(?<first_reg_arg>[a-z]))?\s?
            ((?<second_num_arg>-?[0-9]+)|(?<second_reg_arg>[a-z]))?$
           }ix
-        )
+      )
 
-        first_arg =
-          if match[:first_num_arg]
-            match[:first_num_arg].to_i
-          elsif match[:first_reg_arg]
-            match[:first_reg_arg]
-          end
+      first_arg =
+        if match[:first_num_arg]
+          match[:first_num_arg].to_i
+        elsif match[:first_reg_arg]
+          match[:first_reg_arg]
+        end
 
-        second_arg =
-          if match[:second_num_arg]
-            match[:second_num_arg].to_i
-          elsif match[:second_reg_arg]
-            match[:second_reg_arg]
-          end
+      second_arg =
+        if match[:second_num_arg]
+          match[:second_num_arg].to_i
+        elsif match[:second_reg_arg]
+          match[:second_reg_arg]
+        end
 
-        args = [first_arg, second_arg].compact
+      args = [first_arg, second_arg].compact
 
-        instructions << [match[:instruction], args]
-      end
+      instructions << [match[:instruction], args]
     end
 
     instructions
   end
 end
+
+def sample_input
+  <<~INPUT
+    snd 1
+    snd 2
+    snd p
+    rcv a
+    rcv b
+    rcv c
+    rcv d
+  INPUT
+end
+
+solver = Day18.solve_part_2(sample_input)
+solver.solve
+pp solver.output_part_2
+
+__END__
+set i 31
+set a 1
+mul p 17
+jgz p p
+mul a 2
+add i -1
+jgz i -2
+add a -1
+set i 127
+set p 680
+mul p 8505
+mod p a
+mul p 129749
+add p 12345
+mod p a
+set b p
+mod b 10000
+snd b
+add i -1
+jgz i -9
+jgz a 3
+rcv b
+jgz b -1
+set f 0
+set i 126
+rcv a
+rcv b
+set p a
+mul p -1
+add p b
+jgz p 4
+snd a
+set a b
+jgz 1 3
+snd b
+set f 1
+add i -1
+jgz i -11
+snd a
+jgz f -16
+jgz a -19
